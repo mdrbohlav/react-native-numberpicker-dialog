@@ -44,29 +44,44 @@ class RNNumberPickerDialogModule extends ReactContextBaseJavaModule {
 
         final NumberPicker picker = new NumberPicker(getCurrentActivity());
         picker.setMinValue(0);
-        picker.setMaxValue(values.size() -1);
+        picker.setMaxValue(values.size() - 1);
 
         String[] displayedValues = new String[values.size()];
-        for(int i = 0;i<values.size();++i) {
+
+        for(int i = 0; i < values.size(); ++i) {
             displayedValues[i] = values.getString(i);
         }
+
         picker.setDisplayedValues(displayedValues);
         picker.setWrapSelectorWheel(false);
         picker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
-        final AlertDialog alertDialog = new AlertDialog.Builder(getCurrentActivity());
+        if (options.hasKey("selected")) {
+            final int selected = options.getInt("selected");
 
-        if (options.containsKey('title')) {
+            if (selected >= values.size()) {
+                onFailure.invoke("selected index is out of range");
+                return;
+            }
+
+            picker.setValue(selected);
+        } else {
+            picker.setValue(0);
+        }
+
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(getCurrentActivity());
+
+        if (options.hasKey("title")) {
           alertDialog.setTitle(options.getString("title"));
         }
 
-        if (options.containsKey('message')) {
+        if (options.hasKey("message")) {
           alertDialog.setMessage(options.getString("message"));
         }
 
         alertDialog.setView(picker);
 
-        if (options.containsKey('positiveButtonLabel')) {
+        if (options.hasKey("positiveButtonLabel")) {
           alertDialog.setPositiveButton(options.getString("positiveButtonLabel"), new DialogInterface.OnClickListener() {
               public void onClick(DialogInterface dialog, int whichButton) {
                   onSuccess.invoke(picker.getValue());
@@ -74,7 +89,7 @@ class RNNumberPickerDialogModule extends ReactContextBaseJavaModule {
           });
         }
 
-        if (options.containsKey('negativeButtonLabel')) {
+        if (options.hasKey("negativeButtonLabel")) {
           alertDialog.setNegativeButton(options.getString("negativeButtonLabel"), new DialogInterface.OnClickListener() {
               public void onClick(DialogInterface dialog, int whichButton) {
                   onSuccess.invoke(-1);

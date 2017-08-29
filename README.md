@@ -24,6 +24,7 @@ NumberPickerDialog.show({
   negativeButtonLabel: 'Cancel',  // optional
   message: 'What would you like to have?', // optional
   title: 'Nice dialog', // optional
+  selected: 0, // optional, index of the selected item
 }).then((index) => {
   // index of the chosen item, or -1 if the user cancelled.
 });
