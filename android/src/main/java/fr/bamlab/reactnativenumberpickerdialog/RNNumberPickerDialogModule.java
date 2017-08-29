@@ -54,21 +54,34 @@ class RNNumberPickerDialogModule extends ReactContextBaseJavaModule {
         picker.setWrapSelectorWheel(false);
         picker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
-        new AlertDialog.Builder(getCurrentActivity())
-            .setTitle(options.getString("title"))
-            .setMessage(options.getString("message"))
-            .setView(picker)
-            .setPositiveButton(options.getString("positiveButtonLabel"), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    onSuccess.invoke(picker.getValue());
-                }
-            })
-            .setNegativeButton(options.getString("negativeButtonLabel"), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    onSuccess.invoke(-1);
-                }
-            })
-            .create()
-            .show();
+        final AlertDialog alertDialog = new AlertDialog.Builder(getCurrentActivity());
+
+        if (options.containsKey('title')) {
+          alertDialog.setTitle(options.getString("title"));
+        }
+
+        if (options.containsKey('message')) {
+          alertDialog.setMessage(options.getString("message"));
+        }
+
+        alertDialog.setView(picker);
+
+        if (options.containsKey('positiveButtonLabel')) {
+          alertDialog.setPositiveButton(options.getString("positiveButtonLabel"), new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialog, int whichButton) {
+                  onSuccess.invoke(picker.getValue());
+              }
+          });
+        }
+
+        if (options.containsKey('negativeButtonLabel')) {
+          alertDialog.setNegativeButton(options.getString("negativeButtonLabel"), new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialog, int whichButton) {
+                  onSuccess.invoke(-1);
+              }
+          });
+        }
+
+        alertDialog.create().show();
     }
 }
