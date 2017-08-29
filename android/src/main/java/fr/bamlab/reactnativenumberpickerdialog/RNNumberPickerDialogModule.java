@@ -13,6 +13,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,26 @@ class RNNumberPickerDialogModule extends ReactContextBaseJavaModule {
         String[] displayedValues = new String[values.size()];
 
         for(int i = 0; i < values.size(); ++i) {
-            displayedValues[i] = values.getString(i);
+            ReadableType indexType = values.getType(i);
+            switch(indexType) {
+                case Boolean:
+                    displayedValues[i] = String.valueOf(values.getBoolean(i));
+                    break;
+                case Number:
+                    Double tmp = values.getDouble(i);
+                    if ((tmp == Math.floor(tmp)) && !Double.isInfinite(tmp)) {
+                        displayedValues[i] = String.valueOf(values.getInt(i));
+                        break;
+                    }
+
+                    displayedValues[i] = String.valueOf(tmp);
+                    break;
+                case String:
+                    displayedValues[i] = values.getString(i);
+                    break;
+                default:
+                    displayedValues[i] = "ERROR: Unknown";
+            }
         }
 
         picker.setDisplayedValues(displayedValues);
