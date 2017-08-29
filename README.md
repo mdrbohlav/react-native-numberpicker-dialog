@@ -19,12 +19,19 @@ react-native install react-native-numberpicker-dialog
 import NumberPickerDialog from 'react-native-numberpicker-dialog';
 
 NumberPickerDialog.show({
-  values: ['First item', 'Second item', 'Third item'],
+  options: [{
+    label: 'Label', // optional, displays after the picker
+    values: ['First item', 'Second item', 'Third item'],
+    selected: 0, // optional, index of the pre-selected item
+  }, {
+    label: 'Label', // optional, displays after the picker
+    values: ['Fourth item', 'Fifth item', 'Sixth item'],
+    selected: 0, // optional, index of the pre-selected item
+  }],
   positiveButtonLabel: 'Ok', // optional
   negativeButtonLabel: 'Cancel',  // optional
   message: 'What would you like to have?', // optional
   title: 'Nice dialog', // optional
-  selected: 0, // optional, index of the selected item
 }).then((index) => {
   // index of the chosen item, or -1 if the user cancelled.
 });
